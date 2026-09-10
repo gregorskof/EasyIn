@@ -7,16 +7,16 @@ read and to pair naturally with C++23's `std::print()` and `std::println()`.
 
 ## Features
 
-- `input()` - reads a single value
-- `inputln()` - reads an entire line
-- Header-only
-- No external dependencies
-- Simple and beginner-friendly syntax
-- Works with standard C++ types supported by `std::cin`
+* `input()` - reads a single value
+* `inputln()` - reads an entire line
+* Header-only
+* No external dependencies
+* Simple and beginner-friendly syntax
+* Works with standard C++ types supported by `std::cin`
 
 ## Example
 
-```cpp
+```cpp id="a0cg5z"
 #include <print>
 #include <string>
 #include <easyin.hpp>
@@ -43,14 +43,14 @@ int main() {
 
 Reads a single value using `std::cin`.
 
-```cpp
+```cpp id="ai808o"
 int age;
 input(age);
 ```
 
 It can be used with different types:
 
-```cpp
+```cpp id="qcemu9"
 int number;
 double price;
 std::string word;
@@ -62,32 +62,43 @@ input(word);
 
 For strings, `input()` stops reading when it encounters whitespace.
 
+The function uses `auto`, which allows it to accept different types without
+needing a separate function for each type.
+
+```cpp id="hjhzne"
+void input(auto &var)
+```
+
 ### `inputln()`
 
 Reads an entire line into a `std::string`.
 
-```cpp
+```cpp id="5ix9li"
 std::string name;
 inputln(name);
 ```
 
 Unlike `input()`, this allows spaces:
 
-```text example
+```text id="4j6x68"
 Name Surname
 ```
 
 The function also handles leftover whitespace from previous `input()` calls.
 
+Because `inputln()` uses `std::ws`, whitespace at the beginning of the entered
+line is ignored.
+
 ## Installation
 
-EasyIn is a header-only library, so no compilation or linking is required.
+EasyIn is a header-only library, so no separate library compilation or linking
+is required.
 
 ### Option 1 - Add the header to your project
 
 Download `easyin.hpp` and place it inside your project:
 
-```text
+```text id="2av33o"
 MyProject/
 ├── main.cpp
 └── easyin.hpp
@@ -95,7 +106,7 @@ MyProject/
 
 Then include it with:
 
-```cpp
+```cpp id="vgjgsg"
 #include "easyin.hpp"
 ```
 
@@ -106,19 +117,19 @@ or add your own EasyIn directory to the compiler's include path.
 
 You can then use:
 
-```cpp
+```cpp id="svmqa7"
 #include <easyin.hpp>
 ```
 
 For MSVC, a custom include directory can be added using:
 
-```text
+```text id="dkoclr"
 /I"path\to\include"
 ```
 
 For GCC and Clang:
 
-```text
+```text id="d68h1x"
 -Ipath/to/include
 ```
 
@@ -129,13 +140,13 @@ modifying the compiler's standard library files.
 
 EasyIn requires:
 
-- A C++20-compatible compiler or newer
-- Standard C++ `<iostream>`
-- Standard C++ `<string>`
+* A C++20-compatible compiler or newer
+* Standard C++ `<iostream>`
+* Standard C++ `<string>`
 
-C++20 is required because `input()` uses an abbreviated function template:
+C++20 is required because `input()` uses `auto` in a function parameter:
 
-```cpp
+```cpp id="w5f0ug"
 void input(auto &var)
 ```
 
@@ -143,7 +154,7 @@ The EasyIn library itself does **not** require C++23.
 
 However, examples using:
 
-```cpp
+```cpp id="6r5xk4"
 #include <print>
 
 std::print(...);
@@ -156,7 +167,7 @@ require C++23 support.
 
 Use C++23 mode for the examples with `<print>`:
 
-```text
+```text id="aifqaj"
 /std:c++23preview
 ```
 
@@ -164,13 +175,13 @@ Use C++23 mode for the examples with `<print>`:
 
 Use:
 
-```text
+```text id="qvyd7l"
 -std=c++23
 ```
 
 ## Current implementation
 
-```cpp
+```cpp id="bkdwgo"
 #pragma once
 
 #include <iostream>

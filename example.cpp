@@ -2,6 +2,7 @@
 #include "easyin.hpp"
 
 using namespace std;
+using namespace easyin;
 
 int main() {
 
