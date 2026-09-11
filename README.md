@@ -8,14 +8,16 @@ and attempt to recover after invalid input. Use it with C++20 output such as
 
 ## Features
 
-- `easyin::input()` reads a value using stream extraction (`>>`); for strings,
+* `easyin::input()` reads a value using stream extraction (`>>`); for strings,
   it reads one whitespace-delimited word.
-- `easyin::inputln()` reads a line after skipping leading whitespace.
-- Both return `true` on success and `false` on a failed read.
-- Both clear the stream's error flags and discard through the next newline
+* `easyin::inputln()` reads a line after skipping leading whitespace.
+* Both return `true` on success and `false` on a failed read.
+* Both clear the stream's error flags and discard through the next newline
   after a failed read, unless the stream ends or encounters another error.
-- Both accept an optional `std::istream`, including files and string streams.
-- Header-only, with no external dependencies.
+* Both accept an optional `std::istream`, including files and string streams.
+* Both functions are `inline`, so the header can safely be included from
+  multiple `.cpp` files.
+* Header-only, with no external dependencies.
 
 ## Quick start
 
@@ -71,16 +73,16 @@ those function names into your own scope.
 ### `easyin::input()`
 
 ```cpp
-bool input(auto &var, std::istream &in = std::cin);
+inline bool input(auto &var, std::istream &in = std::cin);
 ```
 
 Reads into `var` using `in >> var`. It accepts types with a compatible stream
 extraction operator, such as `int`, `double`, and `std::string`.
 
-- Uses `std::cin` when you omit the second argument.
-- Returns `true` when extraction succeeds.
-- Returns `false` when extraction fails, after attempting cleanup.
-- For a string, reads one whitespace-delimited word.
+* Uses `std::cin` when you omit the second argument.
+* Returns `true` when extraction succeeds.
+* Returns `false` when extraction fails, after attempting cleanup.
+* For a string, reads one whitespace-delimited word.
 
 This is stream extraction, not validation of an entire entry. For example,
 reading an `int` from `12abc` succeeds with the value `12` and leaves `abc`
@@ -90,7 +92,7 @@ application.
 ### `easyin::inputln()`
 
 ```cpp
-bool inputln(std::string &var, std::istream &in = std::cin);
+inline bool inputln(std::string &var, std::istream &in = std::cin);
 ```
 
 Uses `std::getline(in >> std::ws, var)` to read text into a string. It returns
@@ -261,10 +263,10 @@ I/O error.
 
 Choose the function based on how much text you want to read:
 
-| Call with a `std::string` | What it reads |
-| --- | --- |
-| `input(line, file)` | One word, stopping at whitespace such as a space, tab, or newline. |
-| `inputln(line, file)` | One line after skipping leading whitespace, preserving spaces within the line. |
+| Call with a `std::string` | What it reads                                                                  |
+| ------------------------- | ------------------------------------------------------------------------------ |
+| `input(line, file)`       | One word, stopping at whitespace such as a space, tab, or newline.             |
+| `inputln(line, file)`     | One line after skipping leading whitespace, preserving spaces within the line. |
 
 For example, `input()` reads `Hello, world!` as `Hello,` and then `world!`.
 If you call `println()` after each read, each word appears on its own line.
@@ -282,15 +284,20 @@ Copy `easyin.hpp` into your project and include it with:
 #include "easyin.hpp"
 ```
 
-There is no separate EasyIn library to compile or link. In the current
-implementation, include the header in only one `.cpp` file per executable.
-`inputln()` is defined in the header without `inline`, so including it from
-multiple source files can cause a multiple-definition linker error.
+There is no separate EasyIn library to compile or link. Both functions are
+defined as `inline`, so `easyin.hpp` can safely be included from multiple
+`.cpp` files in the same program without causing multiple-definition linker
+errors.
 
-You can also place it in your own include directory and use
-`#include <easyin.hpp>`. Add that directory to the compiler's search path with
-`-Ipath/to/include` for GCC/Clang or `/I"path\to\include"` for MSVC. Use your own
-include directory rather than modifying the compiler's standard library files.
+You can also place it in your own include directory and use:
+
+```cpp
+#include <easyin.hpp>
+```
+
+Add that directory to the compiler's search path with `-Ipath/to/include`
+for GCC/Clang or `/I"path\to\include"` for MSVC. Use your own include
+directory rather than modifying the compiler's standard library files.
 
 EasyIn requires C++20 or newer because `input()` uses `auto` in a function
 parameter. It includes the standard headers `<iostream>`, `<limits>`, and
@@ -316,15 +323,17 @@ toolchain lacks it, use the C++20 quick start above.
 
 ## Changes in this update
 
-- Both input functions now return a success/failure `bool`.
-- Both accept an optional stream argument while keeping `std::cin` as the default.
-- Failed reads attempt automatic stream cleanup without a fixed character limit.
-- The header includes `<limits>` for the stream cleanup limit.
-- README examples check failed reads, and the documentation explains EOF,
-  whitespace, and partial numeric input.
+* Both input functions now return a success/failure `bool`.
+* Both accept an optional stream argument while keeping `std::cin` as the default.
+* Failed reads attempt automatic stream cleanup without a fixed character limit.
+* Both functions are `inline`, allowing `easyin.hpp` to be safely included
+  from multiple `.cpp` files.
+* The header includes `<limits>` for the stream cleanup limit.
+* README examples check failed reads, and the documentation explains EOF,
+  whitespace, partial numeric input, word input, line input, and file streams.
 
 Existing direct calls such as `easyin::input(age)` still compile, but callers
-should check the new return value. Failed reads now trigger cleanup. Code that
+should check the returned value. Failed reads now trigger cleanup. Code that
 depends on the old exact function signatures, such as function pointers, needs
 updating.
 

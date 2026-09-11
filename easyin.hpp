@@ -5,7 +5,7 @@
 
 namespace easyin {
     // Reads a single value - returns false if the read failed
-    bool input(auto &var, std::istream &in = std::cin) {
+    inline bool input(auto &var, std::istream &in = std::cin) {
         bool ok = static_cast<bool>(in >> var);
         
         if (!ok) {
@@ -16,7 +16,7 @@ namespace easyin {
     }
 
     // Reads an entire line - returns false if the read failed
-    bool inputln(std::string &var, std::istream &in = std::cin) {
+    inline bool inputln(std::string &var, std::istream &in = std::cin) {
         bool ok = static_cast<bool>(std::getline(in >> std::ws, var));
         
         // Cleans up the stream the same way as input()
