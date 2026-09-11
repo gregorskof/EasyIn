@@ -8,7 +8,8 @@ and attempt to recover after invalid input. Use it with C++20 output such as
 
 ## Features
 
-- `easyin::input()` reads a value using stream extraction (`>>`).
+- `easyin::input()` reads a value using stream extraction (`>>`); for strings,
+  it reads one whitespace-delimited word.
 - `easyin::inputln()` reads a line after skipping leading whitespace.
 - Both return `true` on success and `false` on a failed read.
 - Both clear the stream's error flags and discard through the next newline
@@ -182,6 +183,8 @@ int main() {
 }
 ```
 
+### Reading values from a file
+
 To read integers from a file:
 
 ```cpp
@@ -208,6 +211,69 @@ or an I/O error. It reads values separated by whitespace, not necessarily one
 value per line. Cleanup after malformed input discards the rest of that line,
 which can include other values.
 
+### Reading text lines from a file
+
+To read text one line at a time, pass a `std::ifstream` to `inputln()`. This
+example uses C++23's `<print>` and requires a compiler and standard library
+that support `std::println()`.
+
+Create `sample.txt` in the program's working directory with this content:
+
+```text
+Hello, world!
+This is a simple text file.
+You can read it using C++ fstream.
+Each line contains plain text.
+Happy coding!
+```
+
+Place `easyin.hpp` next to your source file and use:
+
+```cpp
+#include <fstream>
+#include <print>
+#include <string>
+#include "easyin.hpp"
+
+using namespace std;
+using namespace easyin;
+
+int main() {
+    string line;
+    ifstream file("sample.txt");
+
+    if (!file.is_open()) {
+        println("Could not open sample.txt.");
+        return 1;
+    }
+
+    while (inputln(line, file)) {
+        println("{}", line);
+    }
+
+    return 0;
+}
+```
+
+The program prints the same five lines, preserving spaces within each line.
+The loop stops when `inputln()` reports a failed read, including EOF or an
+I/O error.
+
+Choose the function based on how much text you want to read:
+
+| Call with a `std::string` | What it reads |
+| --- | --- |
+| `input(line, file)` | One word, stopping at whitespace such as a space, tab, or newline. |
+| `inputln(line, file)` | One line after skipping leading whitespace, preserving spaces within the line. |
+
+For example, `input()` reads `Hello, world!` as `Hello,` and then `world!`.
+If you call `println()` after each read, each word appears on its own line.
+`println()` adds those newlines; reading one word at a time is the intended
+behaviour of `input()` for strings.
+
+`inputln()` skips blank lines and indentation because it uses `std::ws`.
+Use `std::getline(file, line)` directly when you need to preserve them.
+
 ## Installation and requirements
 
 Copy `easyin.hpp` into your project and include it with:
@@ -230,9 +296,9 @@ EasyIn requires C++20 or newer because `input()` uses `auto` in a function
 parameter. It includes the standard headers `<iostream>`, `<limits>`, and
 `<string>`; no third-party dependencies are required.
 
-The library and the README examples do not require C++23. The supplied
-[example.cpp](example.cpp) uses `<print>` and requires a compiler and standard
-library that implement C++23 `std::print()` and `std::println()`.
+The library itself does not require C++23. The text-file example above and the
+supplied [example.cpp](example.cpp) use `<print>` and require a compiler and
+standard library that implement C++23 `std::print()` and `std::println()`.
 
 The supplied example checks the integer read in its failure demonstration;
 its other reads assume valid input. The README examples above show how to
