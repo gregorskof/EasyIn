@@ -2,9 +2,7 @@
 #include "easyin.hpp"
 
 using namespace std;
-// using namespace easyin;
-using easyin::input;
-using easyin::inputln;
+using namespace easyin;
 
 int main() {
 
@@ -38,6 +36,17 @@ int main() {
     print("Enter one more line: ");
     inputln(another);
     println("You entered: {}", another);
+
+    // inputAvailable() can be used to check if input is available in the stream
+    int age = 0;
+
+    while (!input(age)) {
+        if (!inputAvailable()) {
+            println("No more input available.");
+            return 1; // Exit if no more input is available
+        }
+        println("Please enter a valid number.");
+    }
 
     return 0;
 }

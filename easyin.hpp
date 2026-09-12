@@ -26,4 +26,9 @@ namespace easyin {
         }
         return ok;
     }
+
+    // Checks if input is available in the stream
+    inline bool inputAvailable(std::istream &in = std::cin) {
+        return in.good();
+    }
 }
